@@ -1,0 +1,122 @@
+/* Estilos específicos para relatórios */
+.report-header {
+    align-items: center;
+    gap: 20px;
+}
+
+.export-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.btn-danger {
+    background-color: #c0392b;
+    color: white;
+}
+
+.report-kpis {
+    grid-template-columns: repeat(4, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+.report-kpi-card {
+    padding: 25px;
+    border-left: 4px solid var(--primary-color);
+}
+
+.report-kpi-card h3 {
+    margin-bottom: 12px;
+    font-size: 1rem;
+    color: var(--text-muted);
+}
+
+.report-kpi-card .stat-value {
+    font-size: 2rem;
+    margin: 0;
+    color: var(--primary-color);
+}
+
+.report-kpi-card .stat-description {
+    display: block;
+    margin-top: 8px;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.report-grid {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.report-chart-card {
+    min-height: 320px;
+}
+
+.report-chart-card h3 {
+    margin: 0;
+}
+
+.report-table-card {
+    margin-top: 20px;
+}
+
+.table-header {
+    margin-bottom: 20px;
+}
+
+.table-note {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+.report-table th,
+.report-table td {
+    padding: 18px 15px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    text-align: left;
+    font-size: 0.95rem;
+}
+
+.report-table th {
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
+}
+
+.report-table tr:hover {
+    background: rgba(255,255,255,0.03);
+}
+
+@media (max-width: 1024px) {
+    .report-kpis {
+        grid-template-columns: repeat(2, minmax(220px, 1fr));
+    }
+
+    .report-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 640px) {
+    .report-kpis,
+    .export-buttons {
+        grid-template-columns: 1fr;
+    }
+
+    .export-buttons {
+        justify-content: flex-start;
+    }
+
+    .report-table th,
+    .report-table td {
+        padding: 12px 10px;
+        font-size: 0.85rem;
+    }
+}

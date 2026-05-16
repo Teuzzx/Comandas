@@ -1,0 +1,130 @@
+/* Responsividade Geral */
+
+@media (max-width: 1024px) {
+    :root {
+        --sidebar-width: 220px;
+    }
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        width: 0;
+        overflow: hidden;
+    }
+    
+    .sidebar.collapsed {
+        width: var(--sidebar-width);
+    }
+
+    .main-content {
+        margin-left: 0 !important;
+        padding: 15px;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .charts-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-title {
+        font-size: 1.5rem;
+    }
+
+    .modal-content {
+        width: 95%;
+        padding: 20px;
+    }
+
+    .caixa-container {
+        grid-template-columns: 1fr;
+    }
+
+    .payment-methods {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .mesas-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    .stat-card {
+        padding: 15px;
+    }
+
+    .stat-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+    }
+
+    .btn-primary {
+        padding: 8px 15px;
+        font-size: 0.9rem;
+    }
+
+    .modal-content {
+        width: 96%;
+        max-width: 480px;
+        padding: 16px;
+    }
+
+    .pedido-card {
+        padding: 12px;
+    }
+
+    .pedido-actions {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .pedido-actions .btn-status {
+        width: 100%;
+        margin-bottom: 8px;
+    }
+}
+
+@media (max-width: 360px) {
+    .mesas-grid {
+        grid-template-columns: 1fr;
+    }
+    .mesa-number { font-size: 1.8rem; }
+}
+
+/* Utilitários de Tabela Responsiva */
+@media (max-width: 600px) {
+    table thead {
+        display: none;
+    }
+    
+    table, table tbody, table tr, table td {
+        display: block;
+        width: 100%;
+    }
+
+    table tr {
+        margin-bottom: 15px;
+        border: 1px solid var(--glass-border);
+        border-radius: 10px;
+        padding: 10px;
+    }
+
+    table td {
+        text-align: right;
+        padding: 8px !important;
+        position: relative;
+    }
+
+    table td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 10px;
+        font-weight: 700;
+        color: var(--text-muted);
+    }
+}

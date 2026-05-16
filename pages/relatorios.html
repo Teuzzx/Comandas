@@ -1,0 +1,69 @@
+<div class="fade-in">
+    <div class="report-header flex-between" style="margin-bottom: 30px; gap: 15px; flex-wrap: wrap;">
+        <div>
+            <h1 class="dashboard-title">Relatórios</h1>
+            <p class="dashboard-subtitle">Análise de desempenho e vendas para apresentar resultados ao cliente.</p>
+        </div>
+        <div class="export-buttons">
+            <button class="btn-primary" onclick="Relatorios.export('excel')"><i class="fas fa-file-excel"></i> Exportar Excel</button>
+            <button class="btn-primary btn-danger" onclick="Relatorios.export('pdf')"><i class="fas fa-file-pdf"></i> Exportar PDF</button>
+        </div>
+    </div>
+
+    <div class="report-kpis stats-grid">
+        <div class="card stat-card report-kpi-card">
+            <h3>Total de Vendas</h3>
+            <p class="stat-value" id="relatorioTotalVendas">R$ 0,00</p>
+            <span class="stat-description">Comparativo do período</span>
+        </div>
+        <div class="card stat-card report-kpi-card">
+            <h3>Ticket Médio</h3>
+            <p class="stat-value" id="relatorioTicketMedio">R$ 0,00</p>
+            <span class="stat-description">Valor médio por venda</span>
+        </div>
+        <div class="card stat-card report-kpi-card">
+            <h3>Pedidos Registrados</h3>
+            <p class="stat-value" id="relatorioTotalPedidos">0</p>
+            <span class="stat-description">Pedidos finalizados</span>
+        </div>
+        <div class="card stat-card report-kpi-card">
+            <h3>Produtos Vendidos</h3>
+            <p class="stat-value" id="relatorioProdutosVendidos">0</p>
+            <span class="stat-description">Total de itens vendidos</span>
+        </div>
+    </div>
+
+    <div class="report-grid">
+        <div class="card report-chart-card">
+            <div class="flex-between" style="margin-bottom: 20px;"><h3>Vendas por Dia</h3></div>
+            <canvas id="salesChart"></canvas>
+        </div>
+        <div class="card report-chart-card">
+            <div class="flex-between" style="margin-bottom: 20px;"><h3>Top Produtos</h3></div>
+            <canvas id="prodChart"></canvas>
+        </div>
+    </div>
+
+    <div class="card report-table-card">
+        <div class="table-header flex-between" style="margin-bottom: 20px;">
+            <h3>Histórico de Vendas</h3>
+            <span class="table-note">Exportável para PDF ou Excel.</span>
+        </div>
+        <div class="table-responsive">
+            <table class="report-table" style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Mesa</th>
+                        <th>Pagamento</th>
+                        <th>Itens</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody id="vendasTable">
+                    <!-- Injected by JS -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

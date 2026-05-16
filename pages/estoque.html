@@ -1,0 +1,26 @@
+<div class="fade-in">
+    <header class="flex-between" style="margin-bottom: 30px;">
+        <div>
+            <h1 class="dashboard-title">Estoque</h1>
+            <p class="dashboard-subtitle">Controle de insumos e mercadorias.</p>
+        </div>
+        <button class="btn-primary" onclick="Estoque.openModal()">+ Novo Item</button>
+    </header>
+
+    <div class="card">
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr style="text-align: left; color: var(--text-muted); border-bottom: 1px solid var(--glass-border);">
+                    <th style="padding: 15px;">Item</th>
+                    <th style="padding: 15px;">Qtd Atual</th>
+                    <th style="padding: 15px;">Qtd Mínima</th>
+                    <th style="padding: 15px;">Status</th>
+                    <th style="padding: 15px;">Ações</th>
+                </tr>
+            </thead>
+            <tbody id="estoqueTable">
+                <!-- Injected by JS -->
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,35 @@
+:root {
+    /* Cores Principais */
+    --primary-color: #e74c3c;
+    --primary-hover: #c0392b;
+    --secondary-color: #f39c12;
+    --accent-color: #e67e22;
+
+    /* Dark Mode Palette */
+    --bg-dark: #0f0f0f;
+    --bg-card: #1a1a1a;
+    --bg-sidebar: #121212;
+    --bg-input: #252525;
+    
+    /* Text Colors */
+    --text-main: #ffffff;
+    --text-muted: #a0a0a0;
+    --text-dark: #121212;
+
+    /* Status Colors */
+    --success: #2ecc71;
+    --warning: #f1c40f;
+    --danger: #e74c3c;
+    --info: #3498db;
+
+    /* UI Elements */
+    --sidebar-width: 260px;
+    --sidebar-collapsed-width: 80px;
+    --border-radius: 12px;
+    --transition-speed: 0.3s;
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 8px 15px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 12px 25px rgba(0, 0, 0, 0.5);
+}

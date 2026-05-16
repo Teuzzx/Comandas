@@ -1,0 +1,85 @@
+<div class="fade-in">
+    <header class="dashboard-header">
+        <h1 class="dashboard-title">Dashboard</h1>
+        <p class="dashboard-subtitle">Bem-vindo de volta! Aqui está o resumo de hoje.</p>
+    </header>
+
+    <div class="stats-grid">
+        <div class="card stat-card" data-aos="fade-up" data-aos-delay="100">
+            <div class="stat-icon" style="background: rgba(46, 204, 113, 0.1); color: var(--success);">
+                <i class="fas fa-dollar-sign"></i>
+            </div>
+            <div class="stat-info">
+                <h3>Faturamento do Dia</h3>
+                <p class="stat-value" id="statFaturamento">R$ 1.250,00</p>
+            </div>
+        </div>
+
+        <div class="card stat-card" data-aos="fade-up" data-aos-delay="200">
+            <div class="stat-icon" style="background: rgba(52, 152, 219, 0.1); color: var(--info);">
+                <i class="fas fa-shopping-cart"></i>
+            </div>
+            <div class="stat-info">
+                <h3>Pedidos Ativos</h3>
+                <p class="stat-value" id="statPedidos">12</p>
+            </div>
+        </div>
+
+        <div class="card stat-card" data-aos="fade-up" data-aos-delay="300">
+            <div class="stat-icon" style="background: rgba(241, 196, 15, 0.1); color: var(--warning);">
+                <i class="fas fa-chair"></i>
+            </div>
+            <div class="stat-info">
+                <h3>Mesas Ocupadas</h3>
+                <p class="stat-value" id="statMesas">8 / 12</p>
+            </div>
+        </div>
+
+        <div class="card stat-card" data-aos="fade-up" data-aos-delay="400">
+            <div class="stat-icon" style="background: rgba(231, 76, 60, 0.1); color: var(--danger);">
+                <i class="fas fa-fire"></i>
+            </div>
+            <div class="stat-info">
+                <h3>Em Preparo</h3>
+                <p class="stat-value" id="statPreparo">5</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="charts-grid">
+        <div class="card chart-container" data-aos="fade-right">
+            <div class="chart-header">
+                <h3>Vendas por Hora</h3>
+            </div>
+            <canvas id="vendasChart"></canvas>
+        </div>
+
+        <div class="card chart-container" data-aos="fade-left">
+            <div class="chart-header">
+                <h3>Produtos Mais Vendidos</h3>
+            </div>
+            <canvas id="produtosChart"></canvas>
+        </div>
+    </div>
+
+    <div class="card" data-aos="fade-up">
+        <div class="chart-header flex-between">
+            <h3>Últimos Pedidos</h3>
+            <button class="btn-primary" onclick="App.loadPage('pedidos')">Ver Todos</button>
+        </div>
+        <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+            <thead>
+                <tr style="text-align: left; color: var(--text-muted); border-bottom: 1px solid var(--glass-border);">
+                    <th style="padding: 12px;">ID</th>
+                    <th style="padding: 12px;">Mesa</th>
+                    <th style="padding: 12px;">Itens</th>
+                    <th style="padding: 12px;">Total</th>
+                    <th style="padding: 12px;">Status</th>
+                </tr>
+            </thead>
+            <tbody id="recentOrdersTable">
+                <!-- Injected by JS -->
+            </tbody>
+        </table>
+    </div>
+</div>
