@@ -81,21 +81,26 @@ const Caixa = {
         document.getElementById('checkoutTotal').textContent = Utils.formatCurrency(total);
     },
 
-    finalizarVenda() {
+    async finalizarVenda() {
         const desconto = parseFloat(document.getElementById('inputDesconto').value) || 0;
         const total = Math.max(0, this.selectedMesa.total - desconto);
 
-        // Salvar venda no histórico
-        const vendas = Storage.get('vendas') || [];
-        vendas.push({
+        // Salvar venda no histórico local e no DB
+        const venda = {
             id: Utils.generateId(),
-            data: new Date(),
+            data: new Date().toISOString(),
             mesa: this.selectedMesa.id,
             total: total,
             pagamento: this.paymentMethod,
             itens: this.selectedMesa.pedidos
-        });
+        };
+
+        const vendas = Storage.get('vendas') || [];
+        vendas.push(venda);
         Storage.save('vendas', vendas);
+
+        await DB.init();
+        await DB.put('vendas', venda);
 
         // Limpar mesa
         const mesas = Storage.get('mesas');

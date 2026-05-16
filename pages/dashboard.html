@@ -4,6 +4,24 @@
         <p class="dashboard-subtitle">Bem-vindo de volta! Aqui está o resumo de hoje.</p>
     </header>
 
+    <div class="card dashboard-toolbar">
+        <div class="dashboard-filters">
+            <span class="dashboard-filter-label">Período:</span>
+            <input type="date" id="filterFrom">
+            <input type="date" id="filterTo">
+            <button class="btn" id="btnToday">Hoje</button>
+            <button class="btn" id="btn7Days">7 Dias</button>
+            <button class="btn" id="btn30Days">30 Dias</button>
+        </div>
+        <div class="dashboard-actions">
+            <div id="lowStockAlert" class="dashboard-alert">
+                <i class="fas fa-bell"></i>
+                <span id="lowStockCount" class="dashboard-alert-count">0</span>
+            </div>
+            <button class="btn-primary" id="btnRefreshDashboard">Atualizar</button>
+        </div>
+    </div>
+
     <div class="stats-grid">
         <div class="card stat-card" data-aos="fade-up" data-aos-delay="100">
             <div class="stat-icon" style="background: rgba(46, 204, 113, 0.1); color: var(--success);">
@@ -11,7 +29,7 @@
             </div>
             <div class="stat-info">
                 <h3>Faturamento do Dia</h3>
-                <p class="stat-value" id="statFaturamento">R$ 1.250,00</p>
+                <p class="stat-value" id="statFaturamento">R$ 0,00</p>
             </div>
         </div>
 
@@ -21,7 +39,7 @@
             </div>
             <div class="stat-info">
                 <h3>Pedidos Ativos</h3>
-                <p class="stat-value" id="statPedidos">12</p>
+                <p class="stat-value" id="statPedidos">0</p>
             </div>
         </div>
 
@@ -31,7 +49,7 @@
             </div>
             <div class="stat-info">
                 <h3>Mesas Ocupadas</h3>
-                <p class="stat-value" id="statMesas">8 / 12</p>
+                <p class="stat-value" id="statMesas">0 / 0</p>
             </div>
         </div>
 
@@ -41,7 +59,7 @@
             </div>
             <div class="stat-info">
                 <h3>Em Preparo</h3>
-                <p class="stat-value" id="statPreparo">5</p>
+                <p class="stat-value" id="statPreparo">0</p>
             </div>
         </div>
     </div>
@@ -67,19 +85,21 @@
             <h3>Últimos Pedidos</h3>
             <button class="btn-primary" onclick="App.loadPage('pedidos')">Ver Todos</button>
         </div>
-        <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
-            <thead>
-                <tr style="text-align: left; color: var(--text-muted); border-bottom: 1px solid var(--glass-border);">
-                    <th style="padding: 12px;">ID</th>
-                    <th style="padding: 12px;">Mesa</th>
-                    <th style="padding: 12px;">Itens</th>
-                    <th style="padding: 12px;">Total</th>
-                    <th style="padding: 12px;">Status</th>
-                </tr>
-            </thead>
-            <tbody id="recentOrdersTable">
-                <!-- Injected by JS -->
-            </tbody>
-        </table>
+        <div class="table-responsive">
+            <table class="dashboard-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Mesa</th>
+                        <th>Itens</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="recentOrdersTable">
+                    <!-- Injected by JS -->
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>

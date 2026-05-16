@@ -28,12 +28,26 @@ button {
     transition: all var(--transition-speed) ease;
 }
 
+.btn {
+    background-color: rgba(255,255,255,0.08);
+    color: var(--text-main);
+    padding: 10px 18px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.08);
+    font-weight: 600;
+}
+
+.btn:hover {
+    background-color: rgba(255,255,255,0.12);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
 input, select, textarea {
     background-color: var(--bg-input);
     border: 1px solid var(--glass-border);
     color: var(--text-main);
     padding: 12px 16px;
-    border-radius: 8px;
+    border-radius: 10px;
     outline: none;
 }
 
@@ -105,4 +119,76 @@ input:focus {
 .card:hover {
     transform: translateY(-5px);
     box-shadow: var(--shadow-lg);
+}
+
+/* Modal básico */
+.modal {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,0.5);
+    z-index: 9999;
+    padding: 20px;
+}
+
+.modal-content {
+    width: 680px;
+    max-width: 100%;
+    background: var(--bg-dark);
+    padding: 20px;
+    border-radius: 12px;
+}
+
+@media (max-width: 700px) {
+    .modal-content { width: 100%; padding: 16px; }
+    .flex-between { gap: 8px; flex-direction: column; align-items: flex-start; }
+    .card { padding: 12px; }
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.form-group label {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+}
+
+.section-title {
+    margin-bottom: 16px;
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.card.config-card {
+    width: 100%;
+    max-width: 100%;
+}
+
+.field-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+}
+
+.field-row input,
+.field-row select {
+    min-width: 160px;
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+@media (max-width: 768px) {
+    .field-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
 }

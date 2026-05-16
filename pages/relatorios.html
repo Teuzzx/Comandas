@@ -66,4 +66,32 @@
             </table>
         </div>
     </div>
+
+    <div class="card" style="margin-top:20px;">
+        <div class="flex-between" style="margin-bottom:10px; gap:8px; flex-wrap:wrap; align-items:center;">
+            <h3>Movimentações de Estoque</h3>
+            <div style="display:flex; gap:8px; align-items:center;">
+                <input type="date" id="filterDateFromMov">
+                <input type="date" id="filterDateToMov">
+                <input id="filterItemMov" placeholder="Filtrar por item" style="min-width:180px;">
+                <button class="btn" id="btnFilterMov">Filtrar</button>
+                <button class="btn" id="btnClearFilterMov">Limpar</button>
+                <button class="btn" id="btnExportMovExcel">Excel</button>
+                <button class="btn" id="btnExportMovPDF">PDF</button>
+            </div>
+        </div>
+
+        <table style="width:100%; border-collapse:collapse;">
+            <thead>
+                <tr style="text-align:left; color:var(--text-muted); border-bottom:1px solid var(--glass-border);">
+                    <th style="padding:10px;">Data</th>
+                    <th style="padding:10px;">Item</th>
+                    <th style="padding:10px;">Qtd</th>
+                    <th style="padding:10px;">Tipo</th>
+                    <th style="padding:10px;">Usuário</th>
+                </tr>
+            </thead>
+            <tbody id="movimentosTable"></tbody>
+        </table>
+    </div>
 </div>

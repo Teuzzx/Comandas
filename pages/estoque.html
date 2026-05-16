@@ -1,10 +1,14 @@
 <div class="fade-in">
-    <header class="flex-between" style="margin-bottom: 30px;">
+    <header class="flex-between" style="margin-bottom: 30px; gap: 12px;">
         <div>
             <h1 class="dashboard-title">Estoque</h1>
             <p class="dashboard-subtitle">Controle de insumos e mercadorias.</p>
         </div>
-        <button class="btn-primary" onclick="Estoque.openModal()">+ Novo Item</button>
+        <div style="display:flex; align-items:center; gap:8px;">
+            <button class="btn" onclick="Estoque.exportToExcel()" style="background:#2d2d2d; color:var(--text-main); padding:8px 12px; border-radius:8px;">Exportar Excel</button>
+            <button class="btn" onclick="Estoque.exportToPDF()" style="background:#2d2d2d; color:var(--text-main); padding:8px 12px; border-radius:8px;">Exportar PDF</button>
+            <button class="btn-primary" onclick="Estoque.openModal()">+ Novo Item</button>
+        </div>
     </header>
 
     <div class="card">
@@ -22,5 +26,54 @@
                 <!-- Injected by JS -->
             </tbody>
         </table>
+    </div>
+
+    <!-- Modal de Estoque -->
+    <div id="estoqueModal" class="modal" style="display:none;">
+        <div class="modal-content glass">
+            <h3 id="modalTitle">Novo Item</h3>
+            <form id="estoqueForm">
+                <input type="hidden" id="itemId">
+                <div style="margin-top:10px;">
+                    <label>Nome do item</label>
+                    <input id="itemNome" required placeholder="Ex: Queijo Muçarela">
+                </div>
+                <div style="display:flex; gap:8px; margin-top:10px;">
+                    <div style="flex:1;">
+                        <label>Quantidade</label>
+                        <input id="itemQtd" type="number" step="any" required>
+                    </div>
+                    <div style="width:120px;">
+                        <label>Unidade</label>
+                        <input id="itemUnidade" placeholder="un">
+                    </div>
+                    <div style="width:160px;">
+                        <label>Qtd Mínima</label>
+                        <input id="itemMin" type="number" step="any" required>
+                    </div>
+                </div>
+
+                <div style="display:flex; gap:8px; margin-top:16px; justify-content:flex-end;">
+                    <button type="button" class="btn" onclick="Estoque.closeModal()">Cancelar</button>
+                    <button type="button" class="btn" onclick="Estoque.openBaixa()">Dar Baixa</button>
+                    <button type="submit" class="btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Baixa -->
+    <div id="baixaModal" class="modal" style="display:none;">
+        <div class="modal-content glass">
+            <h3>Dar Baixa</h3>
+            <div>
+                <label>Quantidade usada</label>
+                <input id="baixaQtd" type="number" step="any" value="1">
+            </div>
+            <div style="display:flex; gap:8px; margin-top:12px; justify-content:flex-end;">
+                <button class="btn" onclick="Estoque.closeBaixa()">Cancelar</button>
+                <button class="btn-primary" onclick="Estoque.confirmBaixa()">Confirmar</button>
+            </div>
+        </div>
     </div>
 </div>

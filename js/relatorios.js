@@ -2,16 +2,35 @@
  * Lógica de Relatórios
  */
 const Relatorios = {
-    init() {
-        this.render();
+    async init() {
+        await DB.init();
+        await this.render();
+
+        // hook movimentacoes filters
+        const btnFilterMov = document.getElementById('btnFilterMov');
+        const btnClearMov = document.getElementById('btnClearFilterMov');
+        const btnExportMovExcel = document.getElementById('btnExportMovExcel');
+        const btnExportMovPDF = document.getElementById('btnExportMovPDF');
+
+        if (btnFilterMov) btnFilterMov.addEventListener('click', () => this.renderMovements());
+        if (btnClearMov) btnClearMov.addEventListener('click', () => {
+            document.getElementById('filterDateFromMov').value = '';
+            document.getElementById('filterDateToMov').value = '';
+            document.getElementById('filterItemMov').value = '';
+            this.renderMovements();
+        });
+        if (btnExportMovExcel) btnExportMovExcel.addEventListener('click', () => this.exportMovements('excel'));
+        if (btnExportMovPDF) btnExportMovPDF.addEventListener('click', () => this.exportMovements('pdf'));
     },
 
-    render() {
-        this.vendas = [...(Storage.get('vendas') || [])].reverse();
+    async render() {
+        this.vendas = (await DB.getAll('vendas')) || [];
+        this.vendas = this.vendas.reverse();
         this.resumo = this.buildResumo(this.vendas);
         this.renderKpiCards();
         this.renderVendasTable();
         this.renderCharts();
+        await this.renderMovements();
     },
 
     buildResumo(vendas) {
@@ -72,11 +91,11 @@ const Relatorios = {
 
         table.innerHTML = this.vendas.map(venda => `
             <tr>
-                <td>${Utils.formatDateTime(venda.data)}</td>
-                <td>Mesa ${venda.mesa.toString().padStart(2, '0')}</td>
-                <td>${venda.pagamento.toUpperCase()}</td>
-                <td>${(venda.itens || []).reduce((sum, item) => sum + (item.qtd || 0), 0)} itens</td>
-                <td>${Utils.formatCurrency(venda.total)}</td>
+                <td data-label="Data">${Utils.formatDateTime(venda.data)}</td>
+                <td data-label="Mesa">Mesa ${venda.mesa.toString().padStart(2, '0')}</td>
+                <td data-label="Pagamento">${venda.pagamento.toUpperCase()}</td>
+                <td data-label="Itens">${(venda.itens || []).reduce((sum, item) => sum + (item.qtd || 0), 0)} itens</td>
+                <td data-label="Total">${Utils.formatCurrency(venda.total)}</td>
             </tr>
         `).join('');
     },
@@ -96,6 +115,99 @@ const Relatorios = {
             if (window.prodChartInstance) window.prodChartInstance.destroy();
             window.prodChartInstance = Charts.initProdutosChart(prodCanvas, labels, data);
         }
+    },
+
+    async renderMovements() {
+        const table = document.getElementById('movimentosTable');
+        if (!table) return;
+        let movs = await DB.getAll('estoque_movimentos');
+        movs = (movs || []).sort((a,b) => new Date(b.data) - new Date(a.data));
+
+        const from = document.getElementById('filterDateFromMov').value;
+        const to = document.getElementById('filterDateToMov').value;
+        const itemFilter = (document.getElementById('filterItemMov').value || '').toLowerCase();
+
+        const estoque = await DB.getAll('estoque');
+        const itemMap = {};
+        estoque.forEach(i => itemMap[i.id] = i.nome);
+
+        const filtered = movs.filter(m => {
+            const d = new Date(m.data);
+            if (from) {
+                const f = new Date(from);
+                if (d < f) return false;
+            }
+            if (to) {
+                const t = new Date(to);
+                t.setHours(23,59,59,999);
+                if (d > t) return false;
+            }
+            if (itemFilter) {
+                const nome = (itemMap[m.itemId] || '').toLowerCase();
+                if (!nome.includes(itemFilter)) return false;
+            }
+            return true;
+        });
+
+        if (filtered.length === 0) {
+            table.innerHTML = '<tr><td colspan="5" style="padding: 20px; text-align:center; color:var(--text-muted)">Nenhuma movimentação encontrada.</td></tr>';
+            return;
+        }
+
+        table.innerHTML = filtered.map(m => `
+            <tr>
+                <td data-label="Data" style="padding:10px;">${Utils.formatDateTime(m.data)}</td>
+                <td data-label="Item" style="padding:10px;">${itemMap[m.itemId] || m.itemId}</td>
+                <td data-label="Qtd" style="padding:10px;">${m.quantidade}</td>
+                <td data-label="Tipo" style="padding:10px;">${m.tipo}</td>
+                <td data-label="Usuário" style="padding:10px;">${m.usuario || '-'}</td>
+            </tr>
+        `).join('');
+    },
+
+    async exportMovements(type) {
+        const movs = await DB.getAll('estoque_movimentos');
+        if (!movs || movs.length === 0) { Notifications.info('Sem movimentações para exportar.'); return; }
+        const estoque = await DB.getAll('estoque');
+        const itemMap = {};
+        estoque.forEach(i => itemMap[i.id] = i.nome);
+
+        const rows = movs.map(m => ({
+            Data: Utils.formatDateTime(m.data),
+            Item: itemMap[m.itemId] || m.itemId,
+            Quantidade: m.quantidade,
+            Tipo: m.tipo,
+            Usuario: m.usuario || ''
+        }));
+
+        const date = new Date();
+        const fileDate = date.toISOString().slice(0,10).replace(/-/g,'');
+
+        if (type === 'excel') {
+            const wb = XLSX.utils.book_new();
+            const ws = XLSX.utils.json_to_sheet(rows);
+            XLSX.utils.book_append_sheet(wb, ws, 'Movimentacoes');
+            XLSX.writeFile(wb, `movimentacoes_${fileDate}.xlsx`);
+            Notifications.success('Excel gerado.');
+            return;
+        }
+
+        if (type === 'pdf' && window.jspdf) {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            doc.text('Movimentações de Estoque', 14, 20);
+            doc.autoTable({
+                startY: 30,
+                head: [['Data','Item','Quantidade','Tipo','Usuario']],
+                body: rows.map(r => [r.Data, r.Item, r.Quantidade, r.Tipo, r.Usuario]),
+                theme: 'grid'
+            });
+            doc.save(`movimentacoes_${fileDate}.pdf`);
+            Notifications.success('PDF gerado.');
+            return;
+        }
+
+        Notifications.error('Exportação não suportada.');
     },
 
     export(type) {

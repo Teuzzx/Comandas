@@ -84,6 +84,9 @@ const App = {
             case 'relatorios':
                 if (typeof Relatorios !== 'undefined') Relatorios.init();
                 break;
+            case 'configuracoes':
+                if (typeof Configuracoes !== 'undefined') Configuracoes.init();
+                break;
         }
     }
 };
