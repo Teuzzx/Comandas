@@ -8,10 +8,17 @@ const Dashboard = {
     },
 
     init() {
-        console.log("Dashboard inicializado");
-        this.renderCharts();
-        this.renderRecentOrders();
-        this.refreshRealData();
+        try {
+            this.renderCharts();
+            this.renderRecentOrders();
+            this.refreshRealData();
+            var self = this;
+            Storage.onChange('vendas', function() { self.refreshRealData(); });
+            Storage.onChange('estoque', function() { self.refreshRealData(); });
+            Storage.onChange('mesas', function() { self.refreshRealData(); });
+        } catch (e) {
+            console.error('Dashboard.init error:', e);
+        }
     },
 
     async initFilters() {
@@ -152,7 +159,9 @@ const Dashboard = {
             const lowIds = low.map(i=>i.id);
             const newOnes = lowIds.filter(id => !prev.includes(id));
             if (newOnes.length) {
-                Notifications.error(`${newOnes.length} item(ns) com estoque baixo`);
+                if (typeof Notifications !== 'undefined') {
+                    Notifications.warning(newOnes.length + ' item(ns) com estoque baixo');
+                }
             }
             this._lastLowIds = lowIds;
         }, 10000);

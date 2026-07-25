@@ -1,51 +1,47 @@
-/**
- * Lógica de Autenticação
- */
-document.addEventListener('DOMContentLoaded', () => {
-    const loginForm = document.getElementById('loginForm');
+(function() {
+    var loginForm = document.getElementById('loginForm');
+    if (!loginForm) return;
 
-    if (loginForm) {
-        loginForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            const username = document.getElementById('username').value.trim();
-            const pass = document.getElementById('password').value;
+    var login = async function(email, pass) {
+        console.log('login() called with email:', email);
+        var loginError = document.getElementById('loginError');
 
-            // try to authenticate against stored users
-            const users = Storage.get('users') || [];
-            const found = users.find(u => u.username === username && u.password === pass);
-            if (found) {
-                Storage.save('user', { id: found.id, name: found.name, role: found.role });
-                window.location.href = 'index.html';
-                return;
-            }
+        console.log('login() - calling SB.authLogin...');
+        var user = await SB.authLogin(email, pass);
+        console.log('login() - SB.authLogin returned:', user ? user.name : 'null');
 
-            // fallback to legacy hardcoded
-            if (username === 'admin' && pass === 'admin') {
-                Storage.save('user', { name: 'Administrador', role: 'Gerente' });
-                window.location.href = 'index.html';
-            } else if (username === 'garcom' && pass === 'garcom') {
-                Storage.save('user', { name: 'Garçom', role: 'Garçom' });
-                window.location.href = 'index.html';
-            } else if (username === 'cozinha' && pass === 'cozinha') {
-                Storage.save('user', { name: 'Cozinha', role: 'Cozinha' });
-                window.location.href = 'index.html';
-            } else {
-                alert('Usuário ou senha incorretos!');
-            }
-        });
-    }
-
-    // Verificar se já está logado
-    if (window.location.pathname.includes('index.html')) {
-        const user = Storage.get('user');
-        if (!user) {
-            window.location.href = 'login.html';
-        } else {
-            const userNameElem = document.getElementById('userName');
-            const userRoleElem = document.querySelector('.user-role');
+        if (user) {
+            console.log('login() - user found, saving...');
+            Storage.save('user', { id: user.id, name: user.name, role: user.role });
+            document.body.classList.add('authenticated');
+            console.log('login() - authenticated class added');
+            if (loginError) loginError.style.display = 'none';
+            var userNameElem = document.getElementById('userName');
+            var userRoleElem = document.querySelector('.user-role');
             if (userNameElem) userNameElem.textContent = user.name;
             if (userRoleElem) userRoleElem.textContent = user.role;
+            console.log('login() - calling App.init()');
+            if (typeof App !== 'undefined' && App.init) {
+                App.init();
+                console.log('login() - App.init() called');
+            } else {
+                console.log('login() - App.init NOT available');
+            }
+            return;
         }
-    }
-});
+
+        console.log('login() - user NOT found, showing error');
+        if (loginError) {
+            loginError.style.display = 'block';
+            loginError.textContent = 'Email ou senha incorretos!';
+        }
+    };
+
+    loginForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        login(
+            document.getElementById('username').value.trim(),
+            document.getElementById('password').value
+        );
+    });
+})();

@@ -10,11 +10,6 @@
     flex-wrap: wrap;
 }
 
-.btn-danger {
-    background-color: #c0392b;
-    color: white;
-}
-
 .report-kpis {
     grid-template-columns: repeat(4, minmax(220px, 1fr));
     gap: 20px;

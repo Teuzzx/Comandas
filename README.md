@@ -38,14 +38,14 @@ Este é um sistema web completo para gestão de restaurantes, desenvolvido com f
 
 Para acessar o sistema, utilize as seguintes credenciais na tela de login:
 
-*   **Usuário**: `admin`
-*   **Senha**: `admin`
+*   **E-mail**: `admin@admin.com`
+*   **Senha**: `admin123`
 
 ## ⚙️ Como Executar
 
 1.  Extraia o conteúdo do arquivo ZIP.
 2.  Abra a pasta no seu editor de código (ex: VS Code).
-3.  Abra o arquivo `login.html` em qualquer navegador moderno.
+3.  Abra o arquivo `index.html` em qualquer navegador moderno.
 4.  O sistema utiliza `localStorage` para persistir os dados localmente no seu navegador.
 
 ## 📝 Notas de Desenvolvimento

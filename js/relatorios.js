@@ -5,6 +5,9 @@ const Relatorios = {
     async init() {
         await DB.init();
         await this.render();
+        var self = this;
+        Storage.onChange('vendas', function() { self.render(); });
+        Storage.onChange('estoque', function() { self._renderMov && self._renderMov(); });
 
         // hook movimentacoes filters
         const btnFilterMov = document.getElementById('btnFilterMov');
@@ -14,9 +17,9 @@ const Relatorios = {
 
         if (btnFilterMov) btnFilterMov.addEventListener('click', () => this.renderMovements());
         if (btnClearMov) btnClearMov.addEventListener('click', () => {
-            document.getElementById('filterDateFromMov').value = '';
-            document.getElementById('filterDateToMov').value = '';
-            document.getElementById('filterItemMov').value = '';
+            var f1 = document.getElementById('filterDateFromMov'); if (f1) f1.value = '';
+            var f2 = document.getElementById('filterDateToMov'); if (f2) f2.value = '';
+            var f3 = document.getElementById('filterItemMov'); if (f3) f3.value = '';
             this.renderMovements();
         });
         if (btnExportMovExcel) btnExportMovExcel.addEventListener('click', () => this.exportMovements('excel'));
@@ -24,8 +27,7 @@ const Relatorios = {
     },
 
     async render() {
-        this.vendas = (await DB.getAll('vendas')) || [];
-        this.vendas = this.vendas.reverse();
+        this.vendas = ((await DB.getAll('vendas')) || []).slice().reverse();
         this.resumo = this.buildResumo(this.vendas);
         this.renderKpiCards();
         this.renderVendasTable();
@@ -92,8 +94,8 @@ const Relatorios = {
         table.innerHTML = this.vendas.map(venda => `
             <tr>
                 <td data-label="Data">${Utils.formatDateTime(venda.data)}</td>
-                <td data-label="Mesa">Mesa ${venda.mesa.toString().padStart(2, '0')}</td>
-                <td data-label="Pagamento">${venda.pagamento.toUpperCase()}</td>
+                <td data-label="Mesa">${venda.mesa || '-'}</td>
+                <td data-label="Pagamento">${(venda.pagamento || '').toUpperCase()}</td>
                 <td data-label="Itens">${(venda.itens || []).reduce((sum, item) => sum + (item.qtd || 0), 0)} itens</td>
                 <td data-label="Total">${Utils.formatCurrency(venda.total)}</td>
             </tr>
@@ -106,14 +108,14 @@ const Relatorios = {
         if (salesCanvas && this.resumo.vendasPorDia.length) {
             const labels = this.resumo.vendasPorDia.map(item => item.dia);
             const data = this.resumo.vendasPorDia.map(item => Number(item.total.toFixed(2)));
-            if (window.salesChartInstance) window.salesChartInstance.destroy();
-            window.salesChartInstance = Charts.initVendasChart(salesCanvas, labels, data);
+            if (this._salesChart) this._salesChart.destroy();
+            this._salesChart = Charts.initVendasChart(salesCanvas, labels, data);
         }
         if (prodCanvas && this.resumo.topProdutos.length) {
             const labels = this.resumo.topProdutos.map(item => item.nome);
             const data = this.resumo.topProdutos.map(item => item.qtd);
-            if (window.prodChartInstance) window.prodChartInstance.destroy();
-            window.prodChartInstance = Charts.initProdutosChart(prodCanvas, labels, data);
+            if (this._prodChart) this._prodChart.destroy();
+            this._prodChart = Charts.initProdutosChart(prodCanvas, labels, data);
         }
     },
 
@@ -123,9 +125,12 @@ const Relatorios = {
         let movs = await DB.getAll('estoque_movimentos');
         movs = (movs || []).sort((a,b) => new Date(b.data) - new Date(a.data));
 
-        const from = document.getElementById('filterDateFromMov').value;
-        const to = document.getElementById('filterDateToMov').value;
-        const itemFilter = (document.getElementById('filterItemMov').value || '').toLowerCase();
+        const filterFrom = document.getElementById('filterDateFromMov');
+        const filterTo = document.getElementById('filterDateToMov');
+        const filterItem = document.getElementById('filterItemMov');
+        const from = filterFrom ? filterFrom.value : '';
+        const to = filterTo ? filterTo.value : '';
+        const itemFilter = (filterItem ? filterItem.value : '').toLowerCase();
 
         const estoque = await DB.getAll('estoque');
         const itemMap = {};
@@ -224,8 +229,8 @@ const Relatorios = {
             const workbook = XLSX.utils.book_new();
             const vendasSheet = XLSX.utils.json_to_sheet(vendas.map(venda => ({
                 Data: Utils.formatDateTime(venda.data),
-                Mesa: venda.mesa.toString().padStart(2, '0'),
-                Pagamento: venda.pagamento.toUpperCase(),
+                Mesa: venda.mesa || '-',
+                Pagamento: (venda.pagamento || '').toUpperCase(),
                 Itens: (venda.itens || []).reduce((sum, item) => sum + (item.qtd || 0), 0),
                 Total: Utils.formatCurrency(venda.total)
             })));
@@ -276,8 +281,8 @@ const Relatorios = {
                 head: [['Data', 'Mesa', 'Pagamento', 'Itens', 'Total']],
                 body: vendas.map(venda => [
                     Utils.formatDateTime(venda.data),
-                    `Mesa ${venda.mesa.toString().padStart(2, '0')}`,
-                    venda.pagamento.toUpperCase(),
+                    venda.mesa || '-',
+                    (venda.pagamento || '').toUpperCase(),
                     (venda.itens || []).reduce((sum, item) => sum + (item.qtd || 0), 0),
                     Utils.formatCurrency(venda.total)
                 ]),

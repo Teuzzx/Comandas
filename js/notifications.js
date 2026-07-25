@@ -28,6 +28,19 @@ const Notifications = {
         }).showToast();
     },
 
+    warning(message) {
+        Toastify({
+            text: message,
+            duration: 4000,
+            gravity: "top",
+            position: "right",
+            style: {
+                background: "linear-gradient(to right, #f39c12, #e67e22)",
+                borderRadius: "10px"
+            }
+        }).showToast();
+    },
+
     info(message) {
         Toastify({
             text: message,

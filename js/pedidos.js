@@ -1,76 +1,82 @@
-/**
- * Lista e gerenciamento de Pedidos (histórico / fila da cozinha)
- */
-const Pedidos = {
+var Pedidos = {
     init() {
         this.renderPedidos();
+        var self = this;
+        Storage.onChange('pedidos', function() { self.renderPedidos(); });
     },
 
     renderPedidos() {
-        const container = document.getElementById('pedidosList');
+        var container = document.getElementById('pedidosList');
         if (!container) return;
-
-        const pedidos = Storage.get('pedidos') || [];
-        if (pedidos.length === 0) {
-            container.innerHTML = `
-                <div class="card flex-center" style="padding: 60px; flex-direction: column; gap: 12px;">
-                    <i class="fas fa-shopping-basket" style="font-size: 3rem; color: var(--glass-border);"></i>
-                    <p style="color: var(--text-muted);">Nenhum pedido no momento.</p>
-                </div>
-            `;
+        var pedidos = Storage.get('pedidos') || [];
+        var user = Storage.get('user') || {};
+        var role = user.role || 'Garçom';
+        if (!pedidos.length) {
+            container.innerHTML = '<div class="empty-state" style="text-align:center;padding:60px 20px">' +
+                '<i class="fas fa-shopping-basket" style="font-size:3rem;opacity:0.3"></i>' +
+                '<p style="color:var(--text-muted);margin-top:12px">Nenhum pedido registrado</p></div>';
             return;
         }
-
-        container.innerHTML = pedidos.map(p => `
-            <div class="card pedido-card ${p.status}" style="margin-bottom: 12px;">
-                <div class="pedido-header flex-between">
-                    <div>
-                        <div style="font-weight:700;">Pedido #${p.id}</div>
-                        <div style="font-size:0.9rem; color:var(--text-muted);">Mesa ${p.mesa} • ${p.hora}</div>
-                    </div>
-                    <div style="text-align: right;">
-                        <div style="font-weight:700;">${Utils.formatCurrency(p.itens.reduce((s,i)=>s + (i.preco||0)*i.qtd,0))}</div>
-                        <div style="font-size:0.85rem; color:var(--text-muted);">${p.status}</div>
-                    </div>
-                </div>
-                <div class="pedido-itens" style="margin-top:10px;">
-                    ${p.itens.map(i => `<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed rgba(255,255,255,0.02)"><div>${i.qtd}x ${i.nome}</div><div>${Utils.formatCurrency((i.preco||0)*i.qtd)}</div></div>`).join('')}
-                </div>
-                <div class="pedido-actions" style="margin-top:10px;display:flex;gap:10px;">
-                    ${this.renderActions(p)}
-                </div>
-            </div>
-        `).join('');
+        container.innerHTML = '<div class="pedidos-grid">' +
+            pedidos.sort(function(a, b) { return new Date(b.data) - new Date(a.data); }).map(function(p) {
+                var cor = p.status === 'Pendente' ? 'var(--danger)' : p.status === 'Preparando' ? 'var(--warning)' : p.status === 'Pronto' ? 'var(--info)' : 'var(--success)';
+                var podeAvancar = p.status === 'Pendente' || p.status === 'Preparando' || p.status === 'Pronto';
+                var podeAvancarBtn = false;
+                var btnLabel = '';
+                if (p.status === 'Pendente' && (role === 'Cozinha' || role === 'Gerente')) {
+                    podeAvancarBtn = true;
+                    btnLabel = 'Iniciar Preparo';
+                } else if (p.status === 'Preparando' && (role === 'Cozinha' || role === 'Gerente')) {
+                    podeAvancarBtn = true;
+                    btnLabel = 'Marcar Pronto';
+                } else if (p.status === 'Pronto' && (role === 'Garçom' || role === 'Gerente')) {
+                    podeAvancarBtn = true;
+                    btnLabel = 'Entregar';
+                }
+                var podeExcluir = role === 'Gerente';
+                return '<div class="card glass pedido-card" style="border-left:4px solid ' + cor + ';margin-bottom:12px;padding:16px">' +
+                    '<div class="flex-between" style="margin-bottom:8px">' +
+                    '<div><strong style="font-size:1.1rem">' + p.mesa + '</strong>' +
+                    '<span class="badge" style="margin-left:8px;background:' + cor + '">' + p.status + '</span></div>' +
+                    '<span style="font-size:0.8rem;color:var(--text-muted)">' + new Date(p.data).toLocaleString('pt-BR') + '</span></div>' +
+                    '<div style="margin-bottom:8px;font-size:0.9rem">' +
+                    (p.itens || []).map(function(i) {
+                        var obsHtml = i.obs ? '<span style="color:var(--warning);font-size:0.78rem;margin-left:6px"><i class="fas fa-comment"></i> ' + i.obs + '</span>' : '';
+                        var bordaHtml = i.borda ? '<span style="color:var(--info);font-size:0.78rem;margin-left:6px"><i class="fas fa-circle"></i> Borda: ' + i.borda.charAt(0).toUpperCase() + i.borda.slice(1) + '</span>' : '';
+                        return '<div style="padding:2px 0">' + i.qtd + 'x ' + i.nome + obsHtml + bordaHtml + '</div>';
+                    }).join('') +
+                    '</div>' +
+                    '<div class="flex-between">' +
+                    '<span style="font-weight:700;color:var(--success);font-size:1.1rem">R$ ' + (Number(p.total) || 0).toFixed(2) + '</span>' +
+                    '<div style="display:flex;gap:6px">' +
+                    (podeAvancarBtn ? '<button class="btn-primary btn-sm" onclick="Pedidos.avancar(\'' + p.id + '\')">' + btnLabel + '</button>' : '') +
+                    (podeExcluir ? '<button class="btn btn-sm" onclick="Pedidos.excluir(\'' + p.id + '\')" style="color:var(--danger)"><i class="fas fa-trash"></i></button>' : '') +
+                    '</div></div></div>';
+            }).join('') + '</div>';
     },
 
-    renderActions(pedido) {
-        if (pedido.status === 'pendente') {
-            return `<button class="btn-status" style="background: var(--info); color: white;" onclick="Pedidos.updateStatus(${pedido.id}, 'preparando')">Enviar para Preparar</button>`;
-        } else if (pedido.status === 'preparando') {
-            return `<button class="btn-status" style="background: var(--success); color: white;" onclick="Pedidos.updateStatus(${pedido.id}, 'pronto')">Marcar como Pronto</button>`;
-        } else if (pedido.status === 'pronto') {
-            return `<button class="btn-status" style="background: var(--warning); color: black;" onclick="Pedidos.updateStatus(${pedido.id}, 'entregue')">Entregue</button>`;
-        } else {
-            return `<button class="btn-status" style="background: var(--text-muted); color: white;" onclick="Pedidos.delete(${pedido.id})">Remover</button>`;
+    avancar(id) {
+        var pedidos = Storage.get('pedidos') || [];
+        var p = pedidos.find(function(p2) { return p2.id === id; });
+        if (!p) return;
+        var proximo = { 'Pendente': 'Preparando', 'Preparando': 'Pronto', 'Pronto': 'Entregue' };
+        p.status = proximo[p.status] || p.status;
+        Storage.save('pedidos', pedidos);
+        if (typeof Notifications !== 'undefined') {
+            Notifications.success('Pedido atualizado para ' + p.status);
         }
-    },
-
-    updateStatus(id, newStatus) {
-        let pedidos = Storage.get('pedidos') || [];
-        const idx = pedidos.findIndex(p => p.id === id);
-        if (idx === -1) return;
-        pedidos[idx].status = newStatus;
-        Storage.save('pedidos', pedidos);
-        Notifications.success('Status do pedido atualizado!');
         this.renderPedidos();
     },
 
-    delete(id) {
-        if (!confirm('Remover este pedido permanentemente?')) return;
-        let pedidos = Storage.get('pedidos') || [];
-        pedidos = pedidos.filter(p => p.id !== id);
-        Storage.save('pedidos', pedidos);
-        this.renderPedidos();
-        Notifications.success('Pedido removido');
+    excluir(id) {
+        if (!confirm('Excluir este pedido permanentemente?')) return;
+        var pedidos = Storage.get('pedidos') || [];
+        var idx = pedidos.findIndex(function(p) { return p.id === id; });
+        if (idx >= 0) {
+            pedidos.splice(idx, 1);
+            Storage.save('pedidos', pedidos);
+            Notifications.success('Pedido excluído');
+            this.renderPedidos();
+        }
     }
 };

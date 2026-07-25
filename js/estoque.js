@@ -4,16 +4,11 @@
 const Estoque = {
     async init() {
         await DB.init();
-        // seed DB from localStorage if empty
-        const current = await DB.getAll('estoque');
-        if (!current || current.length === 0) {
-            const seeded = Storage.get('estoque') || [];
-            for (const it of seeded) {
-                await DB.put('estoque', it);
-            }
-        }
-
+        this.limparFakeData();
         this.renderEstoque();
+        var self = this;
+        Storage.onChange('estoque', function() { self.renderEstoque(); });
+        Storage.onChange('audit_logs', function() { self.renderAuditLogs && self.renderAuditLogs(); });
 
         // form handlers
         const form = document.getElementById('estoqueForm');
@@ -22,6 +17,13 @@ const Estoque = {
                 e.preventDefault();
                 await this.saveFromForm();
             });
+        }
+    },
+
+    limparFakeData() {
+        var estoque = Storage.get('estoque') || [];
+        if (estoque.length > 0) {
+            Storage.save('estoque', []);
         }
     },
 
@@ -35,6 +37,7 @@ const Estoque = {
                 <td data-label="Item" style="padding: 15px; font-weight: 600;">${item.nome}</td>
                 <td data-label="Qtd Atual" style="padding: 15px;">${item.qtd} ${item.unidade}</td>
                 <td data-label="Qtd Mínima" style="padding: 15px;">${item.min} ${item.unidade}</td>
+                <td data-label="Fornecedor" style="padding: 15px;">${item.fornecedor || '-'}</td>
                 <td data-label="Status" style="padding: 15px;">
                     <span class="badge" style="
                         padding: 5px 10px; 
@@ -62,24 +65,26 @@ const Estoque = {
         const qtd = document.getElementById('itemQtd');
         const unidade = document.getElementById('itemUnidade');
         const min = document.getElementById('itemMin');
+        const fornecedor = document.getElementById('itemFornecedor');
 
         itemId.value = '';
         nome.value = '';
         qtd.value = 0;
         unidade.value = 'un';
         min.value = 1;
+        if (fornecedor) fornecedor.value = '';
 
         if (id) {
-            DB.get('estoque', id).then(item => {
-                if (!item) return Notifications.info('Item não encontrado');
-                itemId.value = item.id;
-                nome.value = item.nome || '';
-                qtd.value = item.qtd || 0;
-                unidade.value = item.unidade || 'un';
-                min.value = item.min || 1;
-                title.innerText = 'Editar Item';
-                modal.style.display = 'flex';
-            });
+            const item = DB.get('estoque', id);
+            if (!item) return Notifications.info('Item não encontrado');
+            itemId.value = item.id;
+            nome.value = item.nome || '';
+            qtd.value = item.qtd || 0;
+            unidade.value = item.unidade || 'un';
+            min.value = item.min || 1;
+            if (fornecedor) fornecedor.value = item.fornecedor || '';
+            title.innerText = 'Editar Item';
+            modal.style.display = 'flex';
         } else {
             title.innerText = 'Novo Item';
             modal.style.display = 'flex';
@@ -97,17 +102,19 @@ const Estoque = {
         const qtd = parseFloat(document.getElementById('itemQtd').value) || 0;
         const unidade = document.getElementById('itemUnidade').value || 'un';
         const min = parseFloat(document.getElementById('itemMin').value) || 1;
+        const fornecedorEl = document.getElementById('itemFornecedor');
+        const fornecedor = fornecedorEl ? fornecedorEl.value.trim() : '';
 
         if (!nome) { Notifications.info('Nome inválido'); return; }
 
         if (itemId) {
-            const item = await DB.get('estoque', itemId);
+            const item = DB.get('estoque', itemId);
             if (!item) return Notifications.info('Item não encontrado');
-            const updated = { ...item, nome, qtd, unidade, min };
+            const updated = { ...item, nome, qtd, unidade, min, fornecedor };
             await DB.put('estoque', updated);
             Notifications.success('Item atualizado!');
         } else {
-            const novo = { id: Utils.generateId(), nome, qtd, unidade, min };
+            const novo = { id: Utils.generateId(), nome, qtd, unidade, min, fornecedor };
             await DB.put('estoque', novo);
             Notifications.success('Item criado!');
         }

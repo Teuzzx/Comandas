@@ -1,172 +1,58 @@
-/**
- * IndexedDB wrapper simples para armazenamento local mais robusto
- */
 const DB = {
-    dbName: 'pizzaria_db',
-    version: 1,
-    db: null,
-
-    init() {
-        return new Promise((resolve, reject) => {
-            if (this.db) return resolve(this.db);
-            const req = indexedDB.open(this.dbName, this.version);
-            req.onupgradeneeded = (e) => {
-                const db = e.target.result;
-                if (!db.objectStoreNames.contains('estoque')) {
-                    db.createObjectStore('estoque', { keyPath: 'id' });
-                }
-                if (!db.objectStoreNames.contains('estoque_movimentos')) {
-                    db.createObjectStore('estoque_movimentos', { keyPath: 'txId' });
-                }
-                if (!db.objectStoreNames.contains('produtos')) {
-                    db.createObjectStore('produtos', { keyPath: 'id' });
-                }
-                if (!db.objectStoreNames.contains('vendas')) {
-                    db.createObjectStore('vendas', { keyPath: 'id' });
-                }
-                if (!db.objectStoreNames.contains('pedidos')) {
-                    db.createObjectStore('pedidos', { keyPath: 'id' });
-                }
-                if (!db.objectStoreNames.contains('funcionarios')) {
-                    db.createObjectStore('funcionarios', { keyPath: 'id' });
-                }
-                if (!db.objectStoreNames.contains('mesas')) {
-                    db.createObjectStore('mesas', { keyPath: 'id' });
-                }
-            };
-
-            req.onsuccess = async (e) => {
-                this.db = e.target.result;
-                try {
-                    await this.seedFromStorage();
-                    resolve(this.db);
-                } catch (err) {
-                    reject(err);
-                }
-            };
-
-            req.onerror = (e) => reject(e.target.error);
-        });
-    },
-
-    async seedStore(storeName, items) {
-        const existing = await this.getAll(storeName);
-        if (!existing || existing.length === 0) {
-            for (const item of items) {
-                await this.put(storeName, item);
-            }
-        }
-    },
-
-    async seedFromStorage() {
-        if (!window.Storage) return;
-        const seeds = {
-            estoque: Storage.get('estoque') || [],
-            vendas: Storage.get('vendas') || [],
-            pedidos: Storage.get('pedidos') || [],
-            produtos: Storage.get('produtos') || [],
-            funcionarios: Storage.get('funcionarios') || [],
-            mesas: Storage.get('mesas') || []
-        };
-
-        for (const [storeName, items] of Object.entries(seeds)) {
-            if (items && items.length > 0) {
-                await this.seedStore(storeName, items);
-            }
-        }
-    },
-
-    _tx(storeName, mode = 'readonly') {
-        const tx = this.db.transaction(storeName, mode);
-        return tx.objectStore(storeName);
+    async init() {
+        await SB.waitReady();
     },
 
     getAll(storeName) {
-        return new Promise((resolve, reject) => {
-            const store = this._tx(storeName, 'readonly');
-            const req = store.getAll();
-            req.onsuccess = () => resolve(req.result || []);
-            req.onerror = (e) => reject(e.target.error);
-        });
+        return Storage.get(storeName) || [];
     },
 
     get(storeName, key) {
-        return new Promise((resolve, reject) => {
-            const store = this._tx(storeName, 'readonly');
-            const req = store.get(key);
-            req.onsuccess = () => resolve(req.result || null);
-            req.onerror = (e) => reject(e.target.error);
-        });
+        const data = Storage.get(storeName) || [];
+        return data.find(d => d.id === key) || null;
     },
 
-    put(storeName, item) {
-        return new Promise((resolve, reject) => {
-            const store = this._tx(storeName, 'readwrite');
-            const req = store.put(item);
-            req.onsuccess = () => resolve(req.result);
-            req.onerror = (e) => reject(e.target.error);
-        });
+    async put(storeName, item) {
+        const data = Storage.get(storeName) || [];
+        const idx = data.findIndex(d => d.id === item.id);
+        if (idx >= 0) {
+            data[idx] = item;
+        } else {
+            data.push(item);
+        }
+        await Storage.save(storeName, data);
     },
 
-    add(storeName, item) {
-        return new Promise((resolve, reject) => {
-            const store = this._tx(storeName, 'readwrite');
-            const req = store.add(item);
-            req.onsuccess = () => resolve(req.result);
-            req.onerror = (e) => reject(e.target.error);
-        });
+    async add(storeName, item) {
+        const data = Storage.get(storeName) || [];
+        data.push(item);
+        await Storage.save(storeName, data);
     },
 
-    delete(storeName, key) {
-        return new Promise((resolve, reject) => {
-            const store = this._tx(storeName, 'readwrite');
-            const req = store.delete(key);
-            req.onsuccess = () => resolve(true);
-            req.onerror = (e) => reject(e.target.error);
-        });
+    async delete(storeName, key) {
+        const data = Storage.get(storeName) || [];
+        const filtered = data.filter(d => d.id !== key);
+        await Storage.save(storeName, filtered);
     },
 
-    clearStore(storeName) {
-        return new Promise((resolve, reject) => {
-            const store = this._tx(storeName, 'readwrite');
-            const req = store.clear();
-            req.onsuccess = () => resolve(true);
-            req.onerror = (e) => reject(e.target.error);
-        });
+    async clearStore(storeName) {
+        await Storage.save(storeName, []);
     },
 
-    exportAll() {
-        // export contents of all object stores
-        return new Promise(async (resolve, reject) => {
-            try {
-                const meta = Array.from(this.db.objectStoreNames);
-                const out = {};
-                for (const name of meta) {
-                    out[name] = await this.getAll(name);
-                }
-                resolve(out);
-            } catch (err) {
-                reject(err);
+    async exportAll() {
+        const keys = ['estoque', 'vendas', 'pedidos', 'produtos', 'funcionarios', 'mesas', 'estoque_movimentos'];
+        const out = {};
+        for (const key of keys) {
+            out[key] = Storage.get(key) || [];
+        }
+        return out;
+    },
+
+    async importAll(data) {
+        for (const [key, items] of Object.entries(data || {})) {
+            if (items && Array.isArray(items)) {
+                await Storage.save(key, items);
             }
-        });
-    },
-
-    importAll(data) {
-        return new Promise(async (resolve, reject) => {
-            try {
-                const meta = Object.keys(data || {});
-                for (const name of meta) {
-                    // clear then put
-                    await this.clearStore(name);
-                    const arr = data[name] || [];
-                    for (const item of arr) {
-                        await this.put(name, item);
-                    }
-                }
-                resolve(true);
-            } catch (err) {
-                reject(err);
-            }
-        });
+        }
     }
 };
