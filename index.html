@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Comandas</title>
+    <!-- Bibliotecas Externas -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    
+    <!-- CSS Local -->
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/login.css">
+    <link rel="stylesheet" href="css/sidebar.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/comandas.css">
+    <link rel="stylesheet" href="css/cozinha.css">
+    <link rel="stylesheet" href="css/caixa.css">
+    <link rel="stylesheet" href="css/estoque.css">
+    <link rel="stylesheet" href="css/relatorios.css">
+    <link rel="stylesheet" href="css/produtos.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+    <!-- Login Overlay -->
+    <div class="login-overlay" id="loginOverlay">
+        <div class="login-container">
+            <div class="login-card glass">
+                <div class="login-logo"><i class="fas fa-pizza-slice"></i></div>
+                <h1 class="login-title">Connect Nexus</h1>
+                <p class="login-subtitle">Faça login para acessar o sistema</p>
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="username">Email</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="username" placeholder="Digite seu email" required autocomplete="email">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Senha</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="password" placeholder="Digite sua senha" required autocomplete="current-password">
+                        </div>
+                    </div>
+                    <div id="loginError" class="login-error"></div>
+                    <button type="submit" class="btn btn-primary login-btn">
+                        <i class="fas fa-sign-in-alt"></i> Entrar
+                    </button>
+                </form>
+                <p class="login-footer">Sistema de Comandas Profissional</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <button id="toggleSidebar" class="mobile-menu-toggle" aria-label="Toggle menu" type="button">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-container">
+                <i class="fas fa-pizza-slice logo-icon"></i>
+                <span class="logo-text">SYSTEM TECH</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-menu">
+            <div class="menu-item active" data-page="dashboard">
+                <i class="fas fa-chart-line"></i>
+                <span>Dashboard</span>
+            </div>
+            <div class="menu-item" data-page="comandas">
+                <i class="fas fa-receipt"></i>
+                <span>Comandas</span>
+            </div>
+            <div class="menu-item" data-page="pedidos">
+                <i class="fas fa-shopping-basket"></i>
+                <span>Pedidos</span>
+            </div>
+            <div class="menu-item" data-page="produtos">
+                <i class="fas fa-pizza-slice"></i>
+                <span>Produtos</span>
+            </div>
+            <div class="menu-item" data-page="cozinha">
+                <i class="fas fa-utensils"></i>
+                <span>Cozinha</span>
+            </div>
+            <div class="menu-item" data-page="caixa">
+                <i class="fas fa-cash-register"></i>
+                <span>Caixa</span>
+            </div>
+            <div class="menu-item" data-page="estoque">
+                <i class="fas fa-boxes-stacked"></i>
+                <span>Estoque</span>
+            </div>
+            <div class="menu-item" data-page="funcionarios">
+                <i class="fas fa-users"></i>
+                <span>Funcionários</span>
+            </div>
+            <div class="menu-item" data-page="analytics">
+                <i class="fas fa-chart-pie"></i>
+                <span>Analytics</span>
+            </div>
+            <div class="menu-item" data-page="relatorios">
+                <i class="fas fa-file-invoice-dollar"></i>
+                <span>Relatórios</span>
+            </div>
+            <div class="menu-item" data-page="configuracoes">
+                <i class="fas fa-cog"></i>
+                <span>Configurações</span>
+            </div>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="user-profile">
+                <div class="user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="user-info">
+                    <p class="user-name" id="userName">Admin</p>
+                    <p class="user-role">Gerente</p>
+                </div>
+                <button id="logoutBtn" style="margin-left: auto; background: transparent; color: var(--text-muted);">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content" id="mainContent">
+        <!-- Content will be loaded here via JS -->
+        <div id="pageLoader" class="flex-center" style="height: 80vh;">
+            <div class="skeleton" style="width: 100%; height: 100%; border-radius: 20px;"></div>
+        </div>
+    </main>
+
+    <!-- Bibliotecas JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+    <!-- JS Local -->
+    <script src="js/utils.js"></script>
+    <script src="js/supabase.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/db.js"></script>
+    <script src="js/notifications.js"></script>
+    <script src="js/sidebar.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="js/comandas.js"></script>
+    <script src="js/cozinha.js"></script>
+    <script src="js/caixa.js"></script>
+    <script src="js/estoque.js"></script>
+    <script src="js/relatorios.js"></script>
+    <script src="js/configuracoes.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    <script src="js/pedidos.js"></script>
+    <script src="js/funcionarios.js"></script>
+    <script src="js/analytics.js"></script>
+    <script src="js/produtos.js"></script>
+    <script src="js/login.js"></script>
+    <script src="js/app.js"></script>
+
+    <script>
+        const initPromise = Storage.init();
+
+        const initializeApp = async () => {
+            await initPromise;
+
+            try {
+                if (typeof AOS !== 'undefined' && AOS.init) {
+                    AOS.init({ duration: 800, once: true });
+                }
+            } catch (e) {
+                console.warn('AOS init error:', e);
+            }
+
+            var savedUser = localStorage.getItem('app_user');
+            if (savedUser) {
+                document.body.classList.add('authenticated');
+                setupApp();
+            }
+        };
+
+        const setupApp = () => {
+            var raw = localStorage.getItem('app_user');
+            if (!raw) return;
+            var user = JSON.parse(raw);
+            const userNameElem = document.getElementById('userName');
+            const userRoleElem = document.querySelector('.user-role');
+            if (userNameElem) userNameElem.textContent = user.name || 'Admin';
+            if (userRoleElem) userRoleElem.textContent = user.role || 'Gerente';
+            if (typeof App !== 'undefined' && App.init) {
+                App.init();
+            }
+        };
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeApp);
+        } else {
+            initializeApp();
+        }
+    </script>
+</body>
+</html>

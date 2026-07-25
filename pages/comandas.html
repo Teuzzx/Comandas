@@ -1,0 +1,70 @@
+<div class="fade-in">
+    <header class="flex-between" style="margin-bottom: 30px;">
+        <div>
+            <h1 class="dashboard-title">Mapa de Mesas</h1>
+            <p class="dashboard-subtitle">Gerencie as mesas e comandas em tempo real.</p>
+        </div>
+        <div class="flex-center" style="gap: 15px;">
+            <div class="flex-center" style="gap: 8px;">
+                <span style="width: 12px; height: 12px; border-radius: 50%; background: var(--success);"></span>
+                <span style="font-size: 0.8rem; color: var(--text-muted);">Livre</span>
+            </div>
+            <div class="flex-center" style="gap: 8px;">
+                <span style="width: 12px; height: 12px; border-radius: 50%; background: var(--danger);"></span>
+                <span style="font-size: 0.8rem; color: var(--text-muted);">Ocupada</span>
+            </div>
+            <div class="flex-center" style="gap: 8px;">
+                <span style="width: 12px; height: 12px; border-radius: 50%; background: var(--warning);"></span>
+                <span style="font-size: 0.8rem; color: var(--text-muted);">Pedindo Conta</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="mesas-grid" id="mesasGrid">
+        <!-- Injected by JS -->
+    </div>
+
+    <!-- Modal de Detalhes da Mesa -->
+    <div class="modal" id="mesaModal">
+        <div class="card modal-content glass fade-in">
+            <div class="modal-header flex-between">
+                <h2 id="modalMesaTitle">Mesa 01</h2>
+                <button onclick="Comandas.closeModal()" style="background: transparent; color: white; font-size: 1.5rem;">&times;</button>
+            </div>
+            
+            <div id="modalMesaBody">
+                <div class="form-group">
+                    <label>Adicionar Produto</label>
+                    <div class="flex-center" style="gap: 10px;">
+                        <select id="selectProduto" style="flex: 1;">
+                            <option value="">Selecione um produto...</option>
+                            <option value="1" data-preco="45.00">Pizza Calabresa (R$ 45,00)</option>
+                            <option value="2" data-preco="55.00">Pizza 4 Queijos (R$ 55,00)</option>
+                            <option value="3" data-preco="32.00">X-Burger (R$ 32,00)</option>
+                            <option value="4" data-preco="15.00">Batata Frita (R$ 15,00)</option>
+                            <option value="5" data-preco="8.00">Coca-Cola (R$ 8,00)</option>
+                        </select>
+                        <button class="btn-primary" onclick="Comandas.addItem()">Adicionar</button>
+                    </div>
+                </div>
+
+                <div class="order-items-list" id="orderItemsList">
+                    <!-- Itens da comanda -->
+                </div>
+
+                <div class="order-footer">
+                    <div class="flex-between" style="margin-bottom: 20px;">
+                        <span style="font-size: 1.2rem; font-weight: 700;">Total:</span>
+                        <span id="modalTotal" style="font-size: 1.5rem; font-weight: 800; color: var(--primary-color);">R$ 0,00</span>
+                    </div>
+                    
+                    <div class="flex-center" style="gap: 10px;">
+                        <button class="btn-primary" style="flex: 1; background: var(--info);" onclick="Comandas.enviarCozinha()">Enviar para Cozinha</button>
+                        <button class="btn-primary" style="flex: 1; background: var(--warning); color: var(--text-dark);" onclick="Comandas.pedirConta()">Pedir Conta</button>
+                        <button class="btn-primary" style="flex: 1; background: var(--danger);" onclick="Comandas.limparMesa()">Limpar Mesa</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

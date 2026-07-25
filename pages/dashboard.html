@@ -1,0 +1,105 @@
+<div class="fade-in">
+    <header class="dashboard-header">
+        <h1 class="dashboard-title">Dashboard</h1>
+        <p class="dashboard-subtitle">Bem-vindo de volta! Aqui está o resumo de hoje.</p>
+    </header>
+
+    <div class="card dashboard-toolbar">
+        <div class="dashboard-filters">
+            <span class="dashboard-filter-label">Período:</span>
+            <input type="date" id="filterFrom">
+            <input type="date" id="filterTo">
+            <button class="btn" id="btnToday">Hoje</button>
+            <button class="btn" id="btn7Days">7 Dias</button>
+            <button class="btn" id="btn30Days">30 Dias</button>
+        </div>
+        <div class="dashboard-actions">
+            <div id="lowStockAlert" class="dashboard-alert">
+                <i class="fas fa-bell"></i>
+                <span id="lowStockCount" class="dashboard-alert-count">0</span>
+            </div>
+            <button class="btn-primary" id="btnRefreshDashboard">Atualizar</button>
+        </div>
+    </div>
+
+    <div class="stats-grid">
+        <div class="card stat-card" data-aos="fade-up" data-aos-delay="100">
+            <div class="stat-icon" style="background: rgba(46, 204, 113, 0.1); color: var(--success);">
+                <i class="fas fa-dollar-sign"></i>
+            </div>
+            <div class="stat-info">
+                <h3>Faturamento do Dia</h3>
+                <p class="stat-value" id="statFaturamento">R$ 0,00</p>
+            </div>
+        </div>
+
+        <div class="card stat-card" data-aos="fade-up" data-aos-delay="200">
+            <div class="stat-icon" style="background: rgba(52, 152, 219, 0.1); color: var(--info);">
+                <i class="fas fa-shopping-cart"></i>
+            </div>
+            <div class="stat-info">
+                <h3>Pedidos Ativos</h3>
+                <p class="stat-value" id="statPedidos">0</p>
+            </div>
+        </div>
+
+        <div class="card stat-card" data-aos="fade-up" data-aos-delay="300">
+            <div class="stat-icon" style="background: rgba(241, 196, 15, 0.1); color: var(--warning);">
+                <i class="fas fa-chair"></i>
+            </div>
+            <div class="stat-info">
+                <h3>Mesas Ocupadas</h3>
+                <p class="stat-value" id="statMesas">0 / 0</p>
+            </div>
+        </div>
+
+        <div class="card stat-card" data-aos="fade-up" data-aos-delay="400">
+            <div class="stat-icon" style="background: rgba(231, 76, 60, 0.1); color: var(--danger);">
+                <i class="fas fa-fire"></i>
+            </div>
+            <div class="stat-info">
+                <h3>Em Preparo</h3>
+                <p class="stat-value" id="statPreparo">0</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="charts-grid">
+        <div class="card chart-container" data-aos="fade-right">
+            <div class="chart-header">
+                <h3>Vendas por Hora</h3>
+            </div>
+            <canvas id="vendasChart"></canvas>
+        </div>
+
+        <div class="card chart-container" data-aos="fade-left">
+            <div class="chart-header">
+                <h3>Produtos Mais Vendidos</h3>
+            </div>
+            <canvas id="produtosChart"></canvas>
+        </div>
+    </div>
+
+    <div class="card" data-aos="fade-up">
+        <div class="chart-header flex-between">
+            <h3>Últimos Pedidos</h3>
+            <button class="btn-primary" onclick="App.loadPage('pedidos')">Ver Todos</button>
+        </div>
+        <div class="table-responsive">
+            <table class="dashboard-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Mesa</th>
+                        <th>Itens</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="recentOrdersTable">
+                    <!-- Injected by JS -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

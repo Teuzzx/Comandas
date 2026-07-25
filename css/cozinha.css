@@ -1,0 +1,67 @@
+.cozinha-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.pedido-card {
+    border-left: 5px solid var(--warning);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.pedido-card.preparando {
+    border-left-color: var(--info);
+}
+
+.pedido-card.pronto {
+    border-left-color: var(--success);
+}
+
+.pedido-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.pedido-mesa {
+    font-size: 1.2rem;
+    font-weight: 800;
+}
+
+.pedido-hora {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.pedido-itens {
+    flex: 1;
+    margin-bottom: 20px;
+}
+
+.pedido-item {
+    padding: 5px 0;
+    font-size: 1rem;
+}
+
+.pedido-item span {
+    font-weight: 700;
+    margin-right: 10px;
+}
+
+.pedido-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-status {
+    flex: 1;
+    padding: 10px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.85rem;
+}

@@ -1,0 +1,452 @@
+/* ============================================
+   Responsividade Geral - Todos os breakpoints
+   ============================================ */
+
+/* === 1024px === */
+@media (max-width: 1024px) {
+    :root {
+        --sidebar-width: 220px;
+    }
+    .report-grid {
+        grid-template-columns: 1fr;
+    }
+    .report-kpis {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* === 900px === */
+@media (max-width: 900px) {
+    .caixa-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* === 768px === */
+@media (max-width: 768px) {
+    .main-content {
+        margin-left: 0 !important;
+        padding: 16px;
+        padding-top: 72px;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .charts-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-title {
+        font-size: 1.3rem;
+    }
+
+    .dashboard-subtitle {
+        font-size: 0.85rem;
+    }
+
+    .cozinha-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .report-kpis {
+        grid-template-columns: 1fr;
+    }
+
+    .flex-between {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .flex-between.header {
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .export-buttons {
+        width: 100%;
+    }
+
+    .export-buttons .btn,
+    .export-buttons .btn-primary {
+        flex: 1;
+    }
+
+    .config-card .field-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .config-card .field-row input,
+    .config-card .field-row select {
+        min-width: 100%;
+    }
+
+    .dashboard-toolbar {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .dashboard-filters {
+        flex-wrap: wrap;
+        width: 100%;
+    }
+
+    .dashboard-filters input[type="date"] {
+        flex: 1;
+        min-width: 120px;
+    }
+
+    .dashboard-actions {
+        width: 100%;
+        justify-content: flex-start;
+    }
+}
+
+/* === 700px === */
+@media (max-width: 700px) {
+    .mesas-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 12px;
+    }
+
+    .mesa-card {
+        aspect-ratio: auto;
+        padding: 12px;
+    }
+
+    .caixa > div[style*="grid-template-columns: 1fr 1fr"] {
+        grid-template-columns: 1fr !important;
+    }
+
+    .payment-methods {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+
+    .payment-btn {
+        min-width: 0;
+        padding: 10px;
+        font-size: 0.8rem;
+    }
+
+    .modal-content {
+        width: 95%;
+        padding: 20px;
+    }
+
+    .pedidos-grid .pedido-card .flex-between {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .pedido-card .flex-between > div:last-child {
+        width: 100%;
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+    }
+
+    .pedido-card .flex-between > div:last-child .btn {
+        flex: 1;
+    }
+}
+
+/* === 600px === */
+@media (max-width: 600px) {
+    table thead {
+        display: none;
+    }
+
+    table,
+    table tbody,
+    table tr,
+    table td {
+        display: block;
+        width: 100%;
+    }
+
+    table tr {
+        margin-bottom: 12px;
+        border: 1px solid var(--glass-border);
+        border-radius: 10px;
+        padding: 10px;
+        background: rgba(255,255,255,0.02);
+    }
+
+    table td {
+        text-align: right;
+        padding: 6px 8px !important;
+        border-bottom: 1px solid rgba(255,255,255,0.04);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    table td:last-child {
+        border-bottom: none;
+    }
+
+    table td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: var(--text-muted);
+        font-size: 0.75rem;
+        text-transform: uppercase;
+    }
+
+    table td[data-label="Ações"] {
+        justify-content: flex-end;
+        gap: 8px;
+    }
+
+    .estoque .card {
+        padding: 12px;
+        overflow-x: hidden;
+    }
+
+    .sidebar-menu {
+        padding: 4px 6px;
+    }
+
+    .menu-item {
+        padding: 8px 10px;
+    }
+
+    .menu-item i {
+        min-width: 30px;
+        font-size: 16px;
+    }
+
+    .menu-item span {
+        font-size: 0.82rem;
+    }
+}
+
+/* === 500px === */
+@media (max-width: 500px) {
+    .mesas-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .mesa-numero {
+        font-size: 0.95rem;
+    }
+
+    .mesa-status {
+        font-size: 0.7rem;
+    }
+
+    .stat-card {
+        padding: 14px;
+    }
+
+    .stat-icon {
+        width: 44px;
+        height: 44px;
+        font-size: 18px;
+    }
+
+    .stat-info h3 {
+        font-size: 0.8rem;
+    }
+
+    .stat-value {
+        font-size: 1.2rem;
+    }
+
+    .btn-primary,
+    .btn {
+        padding: 8px 14px;
+        font-size: 0.82rem;
+    }
+
+    .modal-content {
+        width: 96%;
+        padding: 16px;
+    }
+
+    .caixa-card {
+        padding: 12px !important;
+    }
+
+    .cozinha-card {
+        padding: 12px !important;
+    }
+
+    .pedido-card {
+        padding: 12px !important;
+    }
+
+    .checkout-card {
+        padding: 16px !important;
+    }
+
+    .payment-btn {
+        font-size: 0.72rem;
+        padding: 8px 6px;
+    }
+
+    .payment-btn i {
+        font-size: 1rem;
+    }
+
+    .report-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .login-card {
+        width: 92%;
+        padding: 24px 20px;
+    }
+
+    .login-title {
+        font-size: 1.3rem;
+    }
+
+    .sidebar-header {
+        padding: 14px 12px;
+    }
+
+    .logo-text {
+        font-size: 0.95rem;
+    }
+
+    .user-name {
+        font-size: 0.78rem;
+    }
+
+    .user-role {
+        font-size: 0.65rem;
+    }
+}
+
+/* === 400px === */
+@media (max-width: 400px) {
+    .mesas-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+
+    .mesa-card {
+        padding: 8px;
+    }
+
+    .main-content {
+        padding: 10px;
+        padding-top: 68px;
+    }
+
+    .stats-grid {
+        gap: 10px;
+    }
+
+    .charts-grid {
+        gap: 12px;
+    }
+
+    .card {
+        padding: 14px;
+    }
+
+    .dashboard-title {
+        font-size: 1.1rem;
+    }
+
+    .dashboard-subtitle {
+        font-size: 0.78rem;
+    }
+
+    .modal-content {
+        padding: 12px;
+        border-radius: 12px;
+    }
+
+    .modal-header h2 {
+        font-size: 1rem;
+    }
+
+    .modal-close {
+        width: 30px;
+        height: 30px;
+        font-size: 1rem;
+    }
+
+    .payment-methods {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 6px;
+    }
+
+    .payment-btn {
+        font-size: 0.68rem;
+        padding: 6px 4px;
+        min-width: 0;
+    }
+
+    .form-group label {
+        font-size: 0.78rem;
+    }
+
+    input,
+    select,
+    textarea {
+        padding: 10px 12px;
+        font-size: 0.85rem;
+    }
+
+    .cozinha-grid {
+        gap: 10px;
+    }
+
+    .stats-grid > .card {
+        padding: 12px;
+    }
+
+    .stat-value {
+        font-size: 1.1rem;
+    }
+
+    .dashboard-toolbar {
+        padding: 12px;
+    }
+
+    .dashboard-filters input[type="date"] {
+        min-width: 100px;
+        font-size: 0.78rem;
+    }
+}
+
+/* === 360px === */
+@media (max-width: 360px) {
+    .mesas-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 6px;
+    }
+
+    .mesa-numero {
+        font-size: 0.85rem;
+    }
+
+    .payment-methods {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .btn-primary,
+    .btn {
+        font-size: 0.75rem;
+        padding: 6px 10px;
+    }
+
+    .modal-content {
+        padding: 10px;
+    }
+
+    .user-info {
+        display: none;
+    }
+}

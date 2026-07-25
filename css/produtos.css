@@ -1,0 +1,69 @@
+/* Gestão de Produtos - Tabela */
+
+#produtosTable td {
+    vertical-align: middle;
+}
+
+#produtosTable .badge {
+    font-size: 0.72rem;
+}
+
+#produtosTable .btn-sm {
+    padding: 4px 10px;
+    font-size: 0.8rem;
+}
+
+@media (max-width: 768px) {
+    #produtosTable td:nth-child(4) {
+        display: none;
+    }
+    #produtosTable th:nth-child(4) {
+        display: none;
+    }
+}
+
+@media (max-width: 500px) {
+    #produtosTable td:nth-child(2),
+    #produtosTable th:nth-child(2) {
+        display: none;
+    }
+}
+
+/* Modal do Produto */
+#produtoModal .modal-content {
+    max-width: 520px;
+}
+
+#produtoModal textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 10px;
+    background: var(--bg-input);
+    border: 1px solid var(--glass-border);
+    color: #fff;
+    font-size: 0.85rem;
+    resize: vertical;
+    font-family: inherit;
+    outline: none;
+    box-sizing: border-box;
+}
+
+#produtoModal textarea:focus {
+    border-color: var(--primary-color);
+}
+
+#produtoModal select {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 10px;
+    background: var(--bg-input);
+    border: 1px solid var(--glass-border);
+    color: #fff;
+    font-size: 0.85rem;
+    outline: none;
+    box-sizing: border-box;
+}
+
+#produtoModal select:focus {
+    border-color: var(--primary-color);
+}
